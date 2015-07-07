@@ -4,7 +4,7 @@ import unittest
 
 class NewVisitorTest(unittest.TestCase):
 
-	def setup(self):
+	def setUp(self):
 		self.browser = webdriver.Firefox()
 
 	def tearDown(self):
@@ -17,7 +17,7 @@ class NewVisitorTest(unittest.TestCase):
 
 		# She notices the page title and header mention to-do lists
 		self.assertIn('To-Do', self.browser.title)
-		self.fail('Finish the test!')
+		# self.fail('Finish the test!')
 
 		# The app says to enter an item!
 
