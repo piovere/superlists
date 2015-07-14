@@ -36,16 +36,20 @@ class NewVisitorTest(unittest.TestCase):
 
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')
-		self.assertTrue(
-			any(row.text == '1: Water the garden' for row in rows),
-			"New to-do item did not appear in table"
-		)
+		self.assertIn('1: Water the garden', [row.text for row in rows])
 
 		# There's still a text box
 		# I enter "Fly spray Jesse"
-		self.fail('Finish the test!')
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Fly spray Jesse')
+		inputbox.send_keys(Keys.ENTER)
 
 		# The page updates again and then both items show up
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn('1: Water the garden', [row.text for row in rows])
+		self.assertIn('2: Fly spray Jesse', [row.text for row in rows])
+
 
 		# There is some text telling me that I have my own special URL to visit
 
