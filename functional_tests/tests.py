@@ -38,9 +38,10 @@ class NewVisitorTest(LiveServerTestCase):
 		# I type in "Water the garden"
 		inputbox.send_keys('Water the garden')
 
-		# When I hit enter, the page updates and the page lists 
-		# "1: Water the garden" as an item on the to do list
+		# When I hit enter, I go to a new page and it lists "1: Water the garden"
 		inputbox.send_keys(Keys.ENTER)
+		edith_list_url = self.browser.current_url
+		self.assertRegex(edith_list_url, '/lists/.+')
 
 		self.check_for_row_in_list_table('1: Water the garden')
 
@@ -54,8 +55,29 @@ class NewVisitorTest(LiveServerTestCase):
 		self.check_for_row_in_list_table('1: Water the garden')
 		self.check_for_row_in_list_table('2: Fly spray Jesse')
 
+		# Now there is a new user named Francis
 
-		# There is some text telling me that I have my own special URL to visit
+		# Francis has a new browser session, clean of Edith's cookies
+		self.browser.quit()
+		self.browser = webdriver.Firefox()
 
-		# My URL has my saved to do list!
+		# Francis visits the home page and DOES NOT see Edith's list
+		self.browser.get(self.live_server_url)
+		page_text = self.browser.find_elements_by_tag_name('body').text
+		self.assertNotIn('Water the garden', page_text)
+		self.assertNotIn('Fly spray Jesse', page_text)
 
+		# Seeing a blank page, Francis enters a new item
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Buy milk')
+		inputbox.send_keys(Keys.ENTER)
+
+		# Now Francis has his own URL too. It is different from Edith's
+		francis_list_url = self.browser.current_url
+		self.assertRegex(francis_list_url, '/lists/.+')
+		self.assertNotEqual(francis_list_url, edith_list_url)
+
+		# None of Edith's list appears in Francis' list, but his stuff is there
+		page_text = self.browser.find_element_by_tag_name('body')
+		self.assertNotIn(page_text, 'Water the garden')
+		self.assertIn(page_text, 'Buy milk')
