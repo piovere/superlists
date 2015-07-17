@@ -37,7 +37,8 @@ class NewVisitorTest(unittest.TestCase):
 		# I type in "Water the garden"
 		inputbox.send_keys('Water the garden')
 
-		# When I hit enter, the page updates and the page lists "1: Water the garden" as an item on the to do list
+		# When I hit enter, the page updates and the page lists 
+		# "1: Water the garden" as an item on the to do list
 		inputbox.send_keys(Keys.ENTER)
 
 		self.check_for_row_in_list_table('1: Water the garden')
